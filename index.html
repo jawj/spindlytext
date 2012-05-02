@@ -17,13 +17,12 @@
   window.onload = function() {
     var camCoords = {lat: 51.5047527987133, lon: -0.1263746349634376, alt: 200, heading: 180, tilt: 80};
     var bbCoords  = {lat: 51.5007286626542, lon: -0.1245953142642975, alt: 200};
-    var bbDegreesToCam = Math.atan2(bbCoords.lon - camCoords.lon, bbCoords.lat - camCoords.lat)  * 180 / Math.PI;
+    var bbDegreesToCam = Math.atan2(bbCoords.lon - camCoords.lon, bbCoords.lat - camCoords.lat) * 180 / Math.PI;
     
     var initCallback = function(ge) {
-      window.ge = ge;
       var lRoot = ge.getLayerRoot();
       var layers = [ge.LAYER_TERRAIN, ge.LAYER_TREES, ge.LAYER_BUILDINGS, ge.LAYER_BUILDINGS_LOW_RESOLUTION];
-      for (var i = 0; i < layers.length; i ++) lRoot.enableLayerById(layers[i], true);
+      for (var i = 0, len = layers.length; i < len; i ++) lRoot.enableLayerById(layers[i], true);
       ge.getOptions().setFlyToSpeed(ge.SPEED_TELEPORT)
       var view = ge.getView();
       var cam = view.copyAsCamera(ge.ALTITUDE_ABSOLUTE);
@@ -35,7 +34,6 @@
       view.setAbstractView(cam);
     
       // *** Spindlytext action begins here...
-      
       var bigBen = new Spindlytext(bbCoords.lat, bbCoords.lon, bbCoords.alt);
       bigBen.text('Big Ben',               {bearing: bbDegreesToCam, size: 5, lineWidth: 4});
       bigBen.text('Palace of Westminster', {bearing: bbDegreesToCam, size: 3});
@@ -43,7 +41,6 @@
       var bbKml  = bigBen.kml();
       var bbNode = ge.parseKml(bbKml);
       ge.getFeatures().appendChild(bbNode);
-      
       // *** and ends here
     
       ge.getWindow().setVisibility(true);
