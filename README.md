@@ -21,4 +21,4 @@ A key part of the library is its homegrown, spindly font. I think I've included 
 TODO
 ----
 
-A method returning a three.js @THREE.Line@ might be handy.
+A method returning a three.js THREE.Line might be handy.
