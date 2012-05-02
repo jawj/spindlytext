@@ -22,3 +22,8 @@ TODO
 ----
 
 A method returning a three.js THREE.Line might be handy.
+
+Licence
+-------
+
+This code is released under the "GPL v3":http://www.opensource.org/licenses/GPL-3.0. To negotiate GPL-incompatible uses, feel free contact me.
