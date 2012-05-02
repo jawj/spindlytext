@@ -35,10 +35,10 @@
     
       // *** Spindlytext action begins here...
       var bigBen = new Spindlytext(bbCoords.lat, bbCoords.lon, bbCoords.alt);
-      bigBen.text('Big Ben',               {bearing: bbDegreesToCam, size: 5, lineWidth: 4});
+      bigBen.text('Big Ben', {bearing: bbDegreesToCam, size: 5, lineWidth: 4});
       bigBen.text('Palace of Westminster', {bearing: bbDegreesToCam, size: 3});
-      bigBen.text(new Date().toString(),   {bearing: bbDegreesToCam, size: 3});
-      bigBen.text("Spindlytext, by @jawj", {bearing: bbDegreesToCam, size: 3, colour: 'ff00ffff'});
+      bigBen.text(new Date().toString(), {bearing: bbDegreesToCam, size: 3});
+      bigBen.text("https://github.com/jawj/spindlytext", {bearing: bbDegreesToCam, size: 3, colour: 'ff00ffff'});
       var bbKml  = bigBen.kml();
       var bbNode = ge.parseKml(bbKml);
       ge.getFeatures().appendChild(bbNode);
