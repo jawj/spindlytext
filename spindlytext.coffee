@@ -6,18 +6,20 @@ class this.Spindlytext
   
   nbsp: String.fromCharCode(160)
   
-  constructor: (@lat, @lon, @alt, o = {}) ->
+  constructor: (@lat = 0, @lon = 0, @alt = 0, o = {}) ->
     o.lineWidth ?= 1
     o.colour    ?= 'ffffffff'
     @allCoordSets = []
     @lineOpts = []
     if o.lineWidth > 0
-      @allCoordSets.push([[[@lon, @lat, 0], [@lon, @lat, @alt]]])
-      @lineOpts.push(o)
+      @allCoordSets.push [[[@lon, @lat, 0], [@lon, @lat, @alt]]]
+      @lineOpts.push o
     lonRatio = 1 / Math.cos(@lat * @piOver180)
     @lonFactor = @latFactor * lonRatio
     
-  text: (text, o) -> @line(line, o) for line in text.split("\n")
+  text: (text, o) -> 
+    @line(line, o) for line in text.split "\n"
+    @
     
   line: (text, o = {}) ->
     o.bearing    ?= 0  # text will be readable straight on when viewed facing this way
@@ -30,10 +32,11 @@ class this.Spindlytext
     o.tabSpaces  ?= 4  # tabs are this many spaces wide
     o.offset     ?= 5  # horizontal space at start of line (independent of o.size)
     o.font       ?= @font
+    o.log        ?= no
 
     bRad = -o.bearing * @piOver180
-    sinB = Math.sin(bRad)
-    cosB = Math.cos(bRad)
+    sinB = Math.sin bRad
+    cosB = Math.cos bRad
     latFactor = sinB * o.size * @latFactor
     lonFactor = cosB * o.size * @lonFactor
     latStart = @lat + sinB * o.offset * @latFactor
@@ -43,7 +46,7 @@ class this.Spindlytext
     tabWidth = o.tabSpaces * o.spaceWidth
     lineCoordSets = []
     
-    for char in text.split('')
+    for char in text.split ''
       if char in [" ", @nbsp, "\n", "\r"]
         xCursor += o.spaceWidth
         continue
@@ -52,8 +55,8 @@ class this.Spindlytext
         continue
       paths = o.font[char]
       unless paths
-        # console.log('Unsupported character: ', char, char.charCodeAt(0))
-        paths = o.font['na']
+        console.log 'Unsupported character: U+' + char.charCodeAt(0).toString(16).toUpperCase() if o.log
+        paths = o.font.na
       maxX = 0
       for path in paths
         coords = for x, i in path by 2
@@ -64,19 +67,19 @@ class this.Spindlytext
           lon = lonStart + absX * lonFactor
           alt = @alt - (y * o.size)
           [lon, lat, alt]
-        lineCoordSets.push(coords)
+        lineCoordSets.push coords
       xCursor += maxX + o.charSpace
         
     @alt -= (o.size * @fontHeight) + o.lineSpace
     
-    @lineOpts.push(o)
-    @allCoordSets.push(lineCoordSets)
+    @lineOpts.push o
+    @allCoordSets.push lineCoordSets
     @
        
   kmlFragment: ->
     k = []
-    k.push('<Document>')
-    coordStrs = for lineCoordSets, i in @allCoordSets
+    k.push '<Document>'
+    for lineCoordSets, i in @allCoordSets
       o = @lineOpts[i]
       k.push "<Style id='l#{i}'><LineStyle><color>#{o.colour}</color><width>#{o.lineWidth}</width></LineStyle></Style>"
       for lineCoords in lineCoordSets
@@ -85,12 +88,30 @@ class this.Spindlytext
           <styleUrl>#l#{i}</styleUrl>
           <LineString><altitudeMode>absolute</altitudeMode><coordinates>#{coordStr}</coordinates></LineString>
         </Placemark>"
-    k.push('</Document>')
-    k.join('')
+    k.push '</Document>'
+    k.join ''
     
   kml: ->
     "<?xml version='1.0' encoding='UTF-8'?><kml xmlns='http://www.opengis.net/kml/2.2'>#{@kmlFragment()}</kml>"
-    
+  
+  svgFragment: ->
+    paths = []
+    for lineCoordSets, i in @allCoordSets
+      o = @lineOpts[i]
+      d = []
+      for lineCoords in lineCoordSets
+        for coords, j in lineCoords
+          d.push "#{if j is 0 then 'M' else 'L'} #{coords[0]} #{-coords[2]}"
+      paths.push "<path fill='none' stroke='#{o.colour}' stroke-width='#{o.lineWidth}' d='#{d.join ' '}' />"
+    paths.join ''
+  
+  svg: ->
+    "<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg'>#{@svgFragment()}</svg>"
+  
+  # for SVG use, set latFactor = 1, give an HTML colour, and omit lat/lon/alt -- e.g.
+  # Spindlytext.prototype.latFactor = 1; 
+  # new Spindlytext().text('Merry Xmas', {colour: '#000000'}).svg()
+  
   font: 
     "na": [[0,2,1,2,1,3,0,3,0,2]]  # small square for missing chars
     "0":  [[0,1,0,3,1,4,2,3,2,1,1,0,0,1],[0,3,2,1]]
