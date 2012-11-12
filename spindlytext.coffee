@@ -94,6 +94,10 @@ class this.Spindlytext
   kml: ->
     "<?xml version='1.0' encoding='UTF-8'?><kml xmlns='http://www.opengis.net/kml/2.2'>#{@kmlFragment()}</kml>"
   
+  # for SVG use, set latFactor = 1, give an HTML colour, and omit lat/lon/alt -- e.g.
+  # Spindlytext.prototype.latFactor = 1; 
+  # new Spindlytext().text('Merry Xmas', {colour: '#000000'}).svg()
+    
   svgFragment: ->
     paths = []
     for lineCoordSets, i in @allCoordSets
@@ -107,10 +111,6 @@ class this.Spindlytext
   
   svg: ->
     "<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg'>#{@svgFragment()}</svg>"
-  
-  # for SVG use, set latFactor = 1, give an HTML colour, and omit lat/lon/alt -- e.g.
-  # Spindlytext.prototype.latFactor = 1; 
-  # new Spindlytext().text('Merry Xmas', {colour: '#000000'}).svg()
   
   font: 
     "na": [[0,2,1,2,1,3,0,3,0,2]]  # small square for missing chars
