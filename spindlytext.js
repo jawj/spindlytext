@@ -46,7 +46,7 @@
     };
 
     Spindlytext.prototype.line = function(text, o) {
-      var absX, alt, bRad, char, coords, cosB, i, lat, latFactor, latStart, lineCoordSets, lon, lonFactor, lonStart, maxX, path, paths, sinB, tabWidth, x, xCursor, y, _i, _j, _len, _len1, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      var absX, alt, bRad, chr, coords, cosB, i, lat, latFactor, latStart, lineCoordSets, lon, lonFactor, lonStart, maxX, path, paths, sinB, tabWidth, x, xCursor, y, _i, _j, _len, _len1, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
       if (o == null) {
         o = {};
       }
@@ -95,19 +95,19 @@
       lineCoordSets = [];
       _ref11 = text.split('');
       for (_i = 0, _len = _ref11.length; _i < _len; _i++) {
-        char = _ref11[_i];
-        if (char === " " || char === this.nbsp || char === "\n" || char === "\r") {
+        chr = _ref11[_i];
+        if (chr === " " || chr === this.nbsp || chr === "\n" || chr === "\r") {
           xCursor += o.spaceWidth;
           continue;
         }
-        if (char === "\t") {
+        if (chr === "\t") {
           xCursor = Math.ceil((xCursor + 1) / tabWidth) * tabWidth;
           continue;
         }
-        paths = o.font[char];
+        paths = o.font[chr];
         if (!paths) {
           if (o.log) {
-            console.log('Unsupported character: U+' + char.charCodeAt(0).toString(16).toUpperCase());
+            console.log('Unsupported character: U+' + chr.charCodeAt(0).toString(16).toUpperCase());
           }
           paths = o.font.na;
         }

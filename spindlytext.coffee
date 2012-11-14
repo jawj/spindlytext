@@ -46,16 +46,16 @@ class this.Spindlytext
     tabWidth = o.tabSpaces * o.spaceWidth
     lineCoordSets = []
     
-    for char in text.split ''
-      if char in [" ", @nbsp, "\n", "\r"]
+    for chr in text.split ''
+      if chr in [" ", @nbsp, "\n", "\r"]
         xCursor += o.spaceWidth
         continue
-      if char is "\t"
+      if chr is "\t"
         xCursor = Math.ceil((xCursor + 1) / tabWidth) * tabWidth
         continue
-      paths = o.font[char]
+      paths = o.font[chr]
       unless paths
-        console.log 'Unsupported character: U+' + char.charCodeAt(0).toString(16).toUpperCase() if o.log
+        console.log 'Unsupported character: U+' + chr.charCodeAt(0).toString(16).toUpperCase() if o.log
         paths = o.font.na
       maxX = 0
       for path in paths
